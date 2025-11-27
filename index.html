@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>光球验证码示例</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+      background: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 520px;
+      padding: 16px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1e293b, #020617);
+      border-radius: 18px;
+      padding: 20px 22px 24px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .card-header {
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .captcha-box {
+      margin-top: 16px;
+      padding: 12px 12px 14px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      position: relative;
+      overflow: hidden;
+      height: 200px;
+    }
+
+    .circle {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #fef3c7, #f97316);
+      box-shadow: 0 0 25px rgba(249, 115, 22, 0.7), 0 0 60px rgba(251, 146, 60, 0.5);
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+
+    .captcha-status {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-top: 12px;
+    }
+
+    .captcha-status.ok {
+      color: #4ade80;
+    }
+
+    .captcha-status.error {
+      color: #f97373;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          光球验证码
+        </div>
+        <div class="card-subtitle">
+          点击光球完成验证
+        </div>
+      </div>
+
+      <div class="captcha-box" id="captcha-box">
+        <div class="circle" id="circle"></div>
+        <div id="captcha-status" class="captcha-status">
+          请点击光球完成验证。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const box = document.getElementById("captcha-box");
+      const circle = document.getElementById("circle");
+      const statusEl = document.getElementById("captcha-status");
+
+      const BOX_WIDTH = box.offsetWidth;
+      const BOX_HEIGHT = box.offsetHeight;
+      const CIRCLE_SIZE = circle.offsetWidth;
+
+      let directionX = 1; // 光球的X方向速度
+      let directionY = 1; // 光球的Y方向速度
+      let speed = 2; // 光球的移动速度
+
+      let isVerified = false;
+
+      function moveCircle() {
+        if (isVerified) return;
+
+        // 获取当前光球的位置
+        const circleRect = circle.getBoundingClientRect();
+
+        // 判断是否触碰边缘并反弹
+        if (circleRect.left <= box.offsetLeft || circleRect.right >= box.offsetLeft + BOX_WIDTH) {
+          directionX *= -1;
+        }
+        if (circleRect.top <= box.offsetTop || circleRect.bottom >= box.offsetTop + BOX_HEIGHT) {
+          directionY *= -1;
+        }
+
+        // 移动光球
+        const newX = circle.offsetLeft + directionX * speed;
+        const newY = circle.offsetTop + directionY * speed;
+
+        circle.style.left = newX + 'px';
+        circle.style.top = newY + 'px';
+
+        requestAnimationFrame(moveCircle);
+      }
+
+      circle.addEventListener('click', function () {
+        if (isVerified) return;
+
+        isVerified = true;
+        statusEl.textContent = '验证通过！';
+
+        // 停止移动
+        statusEl.classList.add('ok');
+        cancelAnimationFrame(moveCircle);
+      });
+
+      // 启动光球的移动
+      moveCircle();
+    })();
+  </script>
+</body>
+</html>
