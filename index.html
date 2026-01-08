@@ -1,170 +1,1113 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>光球验证码示例</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - SecureBank</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC",
-        "Microsoft YaHei", sans-serif;
-      background: #0f172a;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #e5e7eb;
-    }
+        :root {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #0f172a;
+            --border: #334155;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
 
-    .page {
-      width: 100%;
-      max-width: 520px;
-      padding: 16px;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+        }
 
-    .card {
-      background: radial-gradient(circle at top left, #1e293b, #020617);
-      border-radius: 18px;
-      padding: 20px 22px 24px;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.25);
-    }
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem;
+        }
 
-    .card-header {
-      margin-bottom: 16px;
-    }
+        /* Login Card */
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
 
-    .card-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
-    .card-subtitle {
-      font-size: 13px;
-      color: #9ca3af;
-    }
+        .logo-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
 
-    .captcha-box {
-      margin-top: 16px;
-      padding: 12px 12px 14px;
-      border-radius: 14px;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      position: relative;
-      overflow: hidden;
-      height: 200px;
-    }
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    .circle {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 20%, #fef3c7, #f97316);
-      box-shadow: 0 0 25px rgba(249, 115, 22, 0.7), 0 0 60px rgba(251, 146, 60, 0.5);
-      cursor: pointer;
-      transition: transform 0.08s ease, box-shadow 0.08s ease;
-    }
+        .logo-subtitle {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
 
-    .captcha-status {
-      font-size: 14px;
-      color: #9ca3af;
-      margin-top: 12px;
-    }
+        h2 {
+            text-align: center;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
 
-    .captcha-status.ok {
-      color: #4ade80;
-    }
+        /* Form */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
 
-    .captcha-status.error {
-      color: #f97373;
-    }
-  </style>
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Checkbox */
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .forgot-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Button */
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), #2563eb);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider-text {
+            padding: 0 1rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Social Login */
+        .social-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-social {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-social:hover {
+            background: var(--border);
+            transform: translateY(-2px);
+        }
+
+        /* Register Link */
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .register-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* ==================== Source Monitor Panel ==================== */
+        .monitor-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 1000;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .monitor-toggle:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .monitor-toggle .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .monitor-panel {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 400px;
+            max-height: 500px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            z-index: 999;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .monitor-panel.show {
+            display: block;
+        }
+
+        .monitor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .monitor-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .monitor-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .monitor-btn {
+            padding: 0.4rem 0.8rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .monitor-btn:hover {
+            border-color: var(--primary);
+        }
+
+        /* Stats */
+        .monitor-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .stat-num {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .stat-num.scripts { color: #8b5cf6; }
+        .stat-num.eval { color: var(--danger); }
+        .stat-num.fetch { color: #06b6d4; }
+        .stat-num.dom { color: var(--warning); }
+
+        .stat-name {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
+        /* Tabs */
+        .monitor-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .monitor-tab {
+            flex: 1;
+            padding: 0.6rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .monitor-tab:hover {
+            color: var(--text);
+        }
+
+        .monitor-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Logs */
+        .monitor-logs {
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .monitor-logs::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .monitor-logs::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .log-item {
+            padding: 0.6rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+
+        .log-item:last-child {
+            border-bottom: none;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+
+        .log-tag {
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .log-tag.script { background: #8b5cf6; color: white; }
+        .log-tag.eval { background: var(--danger); color: white; }
+        .log-tag.function { background: #f97316; color: white; }
+        .log-tag.fetch { background: #06b6d4; color: white; }
+        .log-tag.xhr { background: #0ea5e9; color: white; }
+        .log-tag.mutation { background: var(--warning); color: black; }
+        .log-tag.worker { background: var(--success); color: white; }
+
+        .log-time {
+            color: var(--text-muted);
+            font-size: 0.65rem;
+        }
+
+        .log-content {
+            color: var(--text);
+            word-break: break-all;
+            line-height: 1.4;
+        }
+
+        .log-stack {
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            margin-top: 0.25rem;
+        }
+
+        .empty-logs {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: var(--success);
+            color: white;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+    </style>
 </head>
 <body>
-  <div class="page">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          光球验证码
-        </div>
-        <div class="card-subtitle">
-          点击光球完成验证
-        </div>
-      </div>
+    <div class="container">
+        <div class="login-card">
+            <!-- Logo -->
+            <div class="logo">
+                <div class="logo-icon">🏦</div>
+                <div class="logo-text">SecureBank</div>
+                <div class="logo-subtitle">安全可信赖的网上银行</div>
+            </div>
 
-      <div class="captcha-box" id="captcha-box">
-        <div class="circle" id="circle"></div>
-        <div id="captcha-status" class="captcha-status">
-          请点击光球完成验证。
+            <h2>登录您的账户</h2>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">用户名 / 邮箱</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="username"
+                            name="username"
+                            placeholder="请输入用户名或邮箱"
+                            autocomplete="username"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input 
+                            type="password" 
+                            class="form-input" 
+                            id="password"
+                            name="password"
+                            placeholder="请输入密码"
+                            autocomplete="current-password"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-checkbox">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" id="remember" name="remember">
+                        <span class="checkbox-label">记住我</span>
+                    </label>
+                    <a href="#" class="forgot-link">忘记密码？</a>
+                </div>
+
+                <button type="submit" class="btn-login">登 录</button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-text">或使用以下方式登录</span>
+                <div class="divider-line"></div>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-buttons">
+                <button class="btn-social" data-provider="wechat" title="微信登录">💬</button>
+                <button class="btn-social" data-provider="alipay" title="支付宝登录">💰</button>
+                <button class="btn-social" data-provider="google" title="Google登录">🔍</button>
+                <button class="btn-social" data-provider="apple" title="Apple登录">🍎</button>
+            </div>
+
+            <!-- Register -->
+            <div class="register-link">
+                还没有账户？<a href="#">立即注册</a>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <script>
-    (function () {
-      const box = document.getElementById("captcha-box");
-      const circle = document.getElementById("circle");
-      const statusEl = document.getElementById("captcha-status");
+    <!-- Monitor Toggle Button -->
+    <div class="monitor-toggle" id="monitorToggle" title="Source Monitor">
+        🔬
+        <span class="badge" id="totalBadge">0</span>
+    </div>
 
-      const BOX_WIDTH = box.offsetWidth;
-      const BOX_HEIGHT = box.offsetHeight;
-      const CIRCLE_SIZE = circle.offsetWidth;
+    <!-- Monitor Panel -->
+    <div class="monitor-panel" id="monitorPanel">
+        <div class="monitor-header">
+            <div class="monitor-title">
+                <span class="status-dot"></span>
+                Source Monitor
+            </div>
+            <div class="monitor-controls">
+                <button class="monitor-btn" onclick="SourceMonitor.clearLogs()">清空</button>
+                <button class="monitor-btn" onclick="SourceMonitor.exportLogs()">导出</button>
+            </div>
+        </div>
 
-      let directionX = 1; // 光球的X方向速度
-      let directionY = 1; // 光球的Y方向速度
-      let speed = 1; // 光球的移动速度
+        <div class="monitor-stats">
+            <div class="stat-item">
+                <div class="stat-num scripts" id="statScripts">0</div>
+                <div class="stat-name">脚本</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num eval" id="statEval">0</div>
+                <div class="stat-name">Eval</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num fetch" id="statFetch">0</div>
+                <div class="stat-name">请求</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num dom" id="statDOM">0</div>
+                <div class="stat-name">DOM</div>
+            </div>
+        </div>
 
-      let isVerified = false;
+        <div class="monitor-tabs">
+            <button class="monitor-tab active" data-tab="all">全部</button>
+            <button class="monitor-tab" data-tab="scripts">脚本</button>
+            <button class="monitor-tab" data-tab="eval">Eval</button>
+            <button class="monitor-tab" data-tab="fetch">请求</button>
+            <button class="monitor-tab" data-tab="dom">DOM</button>
+        </div>
 
-      function moveCircle() {
-        if (isVerified) return;
+        <div class="monitor-logs" id="monitorLogs">
+            <div class="empty-logs">等待捕获...</div>
+        </div>
+    </div>
 
-        // 获取当前光球的位置
-        const circleRect = circle.getBoundingClientRect();
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
-        // 判断是否触碰边缘并反弹
-        if (circleRect.left <= box.offsetLeft || circleRect.right >= box.offsetLeft + BOX_WIDTH) {
-          directionX *= -1;
+    <script>
+        /**
+         * ========================================
+         * Source Monitor - 登录页面版
+         * ========================================
+         * 
+         * 监控内容:
+         * 1. 脚本注入 (createElement, document.write)
+         * 2. 动态代码执行 (eval, Function)
+         * 3. 网络请求 (fetch, XHR)
+         * 4. DOM 变化 (MutationObserver)
+         */
+
+        const SourceMonitor = {
+            stats: { scripts: 0, eval: 0, fetch: 0, dom: 0 },
+            logs: [],
+            currentTab: 'all',
+            originals: {},
+
+            init() {
+                this.hookScriptCreation();
+                this.hookEval();
+                this.hookFunction();
+                this.hookFetch();
+                this.hookXHR();
+                this.hookDOM();
+                this.hookDocumentWrite();
+                this.hookCDPInjection();
+                this.bindUI();
+                
+                console.log('%c🔬 Source Monitor Active', 'background: #3b82f6; color: white; padding: 6px 12px; border-radius: 4px;');
+            },
+
+            // 添加日志
+            addLog(category, type, content, extra = {}) {
+                const time = new Date().toLocaleTimeString('zh-CN', { 
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit', 
+                    second: '2-digit'
+                });
+
+                const entry = { time, category, type, content, ...extra, id: Date.now() };
+                this.logs.unshift(entry);
+                if (this.logs.length > 200) this.logs.pop();
+
+                // 更新统计
+                if (category === 'scripts') this.stats.scripts++;
+                else if (category === 'eval') this.stats.eval++;
+                else if (category === 'fetch') this.stats.fetch++;
+                else if (category === 'dom') this.stats.dom++;
+
+                this.updateUI();
+            },
+
+            // 更新 UI
+            updateUI() {
+                document.getElementById('statScripts').textContent = this.stats.scripts;
+                document.getElementById('statEval').textContent = this.stats.eval;
+                document.getElementById('statFetch').textContent = this.stats.fetch;
+                document.getElementById('statDOM').textContent = this.stats.dom;
+
+                const total = this.stats.scripts + this.stats.eval + this.stats.fetch + this.stats.dom;
+                document.getElementById('totalBadge').textContent = total > 99 ? '99+' : total;
+
+                this.renderLogs();
+            },
+
+            // 渲染日志
+            renderLogs() {
+                const container = document.getElementById('monitorLogs');
+                let filtered = this.logs;
+
+                if (this.currentTab !== 'all') {
+                    filtered = this.logs.filter(log => log.category === this.currentTab);
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="empty-logs">暂无日志</div>';
+                    return;
+                }
+
+                container.innerHTML = filtered.slice(0, 50).map(log => `
+                    <div class="log-item">
+                        <div class="log-header">
+                            <span class="log-tag ${log.type}">${log.type.toUpperCase()}</span>
+                            <span class="log-time">${log.time}</span>
+                        </div>
+                        <div class="log-content">${this.escapeHtml(log.content)}</div>
+                        ${log.stack ? `<div class="log-stack">${log.stack}</div>` : ''}
+                    </div>
+                `).join('');
+            },
+
+            escapeHtml(str) {
+                if (typeof str !== 'string') str = String(str);
+                return str
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .slice(0, 300) + (str.length > 300 ? '...' : '');
+            },
+
+            getStack() {
+                try { throw new Error(); } catch (e) {
+                    return e.stack.split('\n').slice(3, 5).join(' ← ').replace(/\s+/g, ' ').slice(0, 150);
+                }
+            },
+
+            // ==================== 钩子函数 ====================
+
+            hookScriptCreation() {
+                const self = this;
+                const original = document.createElement.bind(document);
+                this.originals.createElement = original;
+
+                document.createElement = function(tagName, options) {
+                    const el = original(tagName, options);
+                    
+                    if (tagName.toLowerCase() === 'script') {
+                        self.addLog('scripts', 'script', '创建 <script> 元素', { stack: self.getStack() });
+
+                        // 监控 src
+                        let srcVal = '';
+                        Object.defineProperty(el, 'src', {
+                            get() { return srcVal; },
+                            set(v) {
+                                srcVal = v;
+                                self.addLog('scripts', 'script', `设置 src: ${v}`, { stack: self.getStack() });
+                            }
+                        });
+
+                        // 监控 textContent
+                        let textVal = '';
+                        Object.defineProperty(el, 'textContent', {
+                            get() { return textVal; },
+                            set(v) {
+                                textVal = v;
+                                if (v?.trim()) {
+                                    self.addLog('scripts', 'script', `内联代码: ${v.slice(0, 100)}...`, { stack: self.getStack() });
+                                }
+                            }
+                        });
+                    }
+                    return el;
+                };
+            },
+
+            hookEval() {
+                const self = this;
+                const original = window.eval;
+                this.originals.eval = original;
+
+                window.eval = function(code) {
+                    self.addLog('eval', 'eval', `eval(): ${String(code).slice(0, 200)}`, { stack: self.getStack() });
+                    return original.call(this, code);
+                };
+            },
+
+            hookFunction() {
+                const self = this;
+                const Original = window.Function;
+                this.originals.Function = Original;
+
+                window.Function = function(...args) {
+                    self.addLog('eval', 'function', `new Function(${args.join(', ').slice(0, 200)})`, { stack: self.getStack() });
+                    return new Original(...args);
+                };
+                window.Function.prototype = Original.prototype;
+            },
+
+            hookFetch() {
+                const self = this;
+                const original = window.fetch;
+                this.originals.fetch = original;
+
+                window.fetch = function(input, init = {}) {
+                    const url = typeof input === 'string' ? input : input?.url || input;
+                    const method = init.method || 'GET';
+                    self.addLog('fetch', 'fetch', `${method} ${url}`, { stack: self.getStack() });
+                    return original.call(this, input, init);
+                };
+            },
+
+            hookXHR() {
+                const self = this;
+                const Original = window.XMLHttpRequest;
+                this.originals.XMLHttpRequest = Original;
+
+                window.XMLHttpRequest = function() {
+                    const xhr = new Original();
+                    const originalOpen = xhr.open.bind(xhr);
+                    
+                    xhr.open = function(method, url, ...args) {
+                        self.addLog('fetch', 'xhr', `${method} ${url}`, { stack: self.getStack() });
+                        return originalOpen(method, url, ...args);
+                    };
+                    return xhr;
+                };
+            },
+
+            hookDOM() {
+                const self = this;
+                
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach(m => {
+                        m.addedNodes.forEach(node => {
+                            if (node.nodeType === 1) {
+                                if (node.tagName === 'SCRIPT') {
+                                    self.addLog('dom', 'mutation', `DOM添加 <script>: ${node.src || '内联'}`);
+                                } else if (node.tagName === 'IFRAME') {
+                                    self.addLog('dom', 'mutation', `DOM添加 <iframe>: ${node.src || 'blank'}`);
+                                }
+                            }
+                        });
+
+                        if (m.type === 'attributes' && m.attributeName?.startsWith('on')) {
+                            self.addLog('dom', 'mutation', `属性变化: ${m.target.tagName}.${m.attributeName}`);
+                        }
+                    });
+                });
+
+                observer.observe(document.documentElement, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['src', 'href', 'onclick', 'onload', 'onerror']
+                });
+            },
+
+            hookDocumentWrite() {
+                const self = this;
+                const original = document.write.bind(document);
+                this.originals.write = original;
+
+                document.write = function(markup) {
+                    if (markup?.includes('<script')) {
+                        self.addLog('scripts', 'script', `document.write: ${markup.slice(0, 150)}`, { stack: self.getStack() });
+                    }
+                    return original(markup);
+                };
+            },
+
+            // 监控 CDP/Puppeteer 注入 (page.evaluate, page.addScriptTag 等)
+            hookCDPInjection() {
+                const self = this;
+
+                // 1. 监控 Runtime.evaluate 通过检测执行上下文
+                // CDP 注入的代码通常有特殊的调用栈特征
+                const detectCDPStack = () => {
+                    try { throw new Error(); } catch (e) {
+                        const stack = e.stack || '';
+                        // Puppeteer/CDP 注入的特征
+                        if (stack.includes('__puppeteer_evaluation_script__') ||
+                            stack.includes('pptr:evaluate') ||
+                            stack.includes('Runtime.evaluate') ||
+                            stack.includes('ExecutionContext') ||
+                            stack.includes('_onTimeout') && stack.includes('.asar')) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+
+                // 2. 监控 setTimeout/setInterval (CDP 常用这些执行代码)
+                const originalSetTimeout = window.setTimeout;
+                const originalSetInterval = window.setInterval;
+                this.originals.setTimeout = originalSetTimeout;
+                this.originals.setInterval = originalSetInterval;
+
+                window.setTimeout = function(fn, delay, ...args) {
+                    if (typeof fn === 'string') {
+                        self.addLog('eval', 'eval', `setTimeout(string): ${fn.slice(0, 150)}`, { stack: self.getStack() });
+                    } else if (typeof fn === 'function') {
+                        const stack = self.getStack();
+                        if (stack.includes('pptr') || stack.includes('.asar') || stack.includes('evaluate')) {
+                            self.addLog('eval', 'eval', `setTimeout (CDP注入检测): ${fn.toString().slice(0, 100)}`, { stack });
+                        }
+                    }
+                    return originalSetTimeout.call(this, fn, delay, ...args);
+                };
+
+                window.setInterval = function(fn, delay, ...args) {
+                    if (typeof fn === 'string') {
+                        self.addLog('eval', 'eval', `setInterval(string): ${fn.slice(0, 150)}`, { stack: self.getStack() });
+                    }
+                    return originalSetInterval.call(this, fn, delay, ...args);
+                };
+
+                // 3. 监控 Function.prototype.call/apply (CDP 经常用这些)
+                const originalCall = Function.prototype.call;
+                const originalApply = Function.prototype.apply;
+
+                // 4. 检测 window 上新增的全局变量 (CDP 注入常添加)
+                const knownGlobals = new Set(Object.keys(window));
+                setInterval(() => {
+                    Object.keys(window).forEach(key => {
+                        if (!knownGlobals.has(key) && !key.startsWith('__SOURCE')) {
+                            knownGlobals.add(key);
+                            const value = window[key];
+                            const type = typeof value;
+                            if (type === 'function' || type === 'object') {
+                                self.addLog('eval', 'eval', `新增全局变量: window.${key} (${type})`, {});
+                            }
+                        }
+                    });
+                }, 1000);
+
+                // 5. 监控 Object.defineProperty (CDP 用来修改原型)
+                const originalDefineProperty = Object.defineProperty;
+                this.originals.defineProperty = originalDefineProperty;
+
+                Object.defineProperty = function(obj, prop, descriptor) {
+                    // 检测对原生对象的修改
+                    if (obj === window || obj === document || 
+                        obj === Element.prototype || obj === Node.prototype ||
+                        obj === HTMLElement.prototype) {
+                        self.addLog('eval', 'eval', `Object.defineProperty: ${obj.constructor?.name || 'object'}.${String(prop)}`, { 
+                            stack: self.getStack() 
+                        });
+                    }
+                    return originalDefineProperty.call(this, obj, prop, descriptor);
+                };
+
+                // 6. 监控 Proxy 创建 (自动化工具常用)
+                const OriginalProxy = window.Proxy;
+                if (OriginalProxy) {
+                    window.Proxy = function(target, handler) {
+                        self.addLog('eval', 'eval', `new Proxy() 创建`, { stack: self.getStack() });
+                        return new OriginalProxy(target, handler);
+                    };
+                }
+
+                // 7. 定期检查是否有 CDP 连接特征
+                this.checkCDPConnection();
+            },
+
+            // 检测 CDP 连接特征
+            checkCDPConnection() {
+                const self = this;
+                
+                // 检测 webdriver 属性
+                if (navigator.webdriver) {
+                    self.addLog('eval', 'eval', '检测到 navigator.webdriver = true (自动化环境)', {});
+                }
+
+                // 检测 CDP 特有的属性
+                const cdpSigns = [
+                    'cdc_adoQpoasnfa76pfcZLmcfl_Array',
+                    'cdc_adoQpoasnfa76pfcZLmcfl_Promise', 
+                    'cdc_adoQpoasnfa76pfcZLmcfl_Symbol',
+                    '__webdriver_evaluate',
+                    '__selenium_evaluate',
+                    '__webdriver_script_function',
+                    '__webdriver_script_func',
+                    '__webdriver_script_fn',
+                    '__fxdriver_evaluate',
+                    '__driver_unwrapped',
+                    '__webdriver_unwrapped',
+                    '__driver_evaluate',
+                    '__selenium_unwrapped',
+                    '__fxdriver_unwrapped',
+                    '_Selenium_IDE_Recorder',
+                    '_selenium',
+                    'calledSelenium',
+                    '$chrome_asyncScriptInfo',
+                    '$cdc_asdjflasutopfhvcZLmcfl_',
+                    '__$webdriverAsyncExecutor'
+                ];
+
+                cdpSigns.forEach(sign => {
+                    if (sign in window || sign in document) {
+                        self.addLog('eval', 'eval', `检测到自动化特征: ${sign}`, {});
+                    }
+                });
+
+                // 检测 Chrome DevTools Protocol 注入的函数
+                if (window.chrome && window.chrome.csi) {
+                    // 正常的 chrome.csi 检查
+                }
+            },
+
+            // ==================== UI 绑定 ====================
+
+            bindUI() {
+                // Toggle panel
+                document.getElementById('monitorToggle').addEventListener('click', () => {
+                    document.getElementById('monitorPanel').classList.toggle('show');
+                });
+
+                // Tabs
+                document.querySelectorAll('.monitor-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        document.querySelectorAll('.monitor-tab').forEach(t => t.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentTab = e.target.dataset.tab;
+                        this.renderLogs();
+                    });
+                });
+            },
+
+            clearLogs() {
+                this.logs = [];
+                this.stats = { scripts: 0, eval: 0, fetch: 0, dom: 0 };
+                this.updateUI();
+            },
+
+            exportLogs() {
+                const data = { timestamp: new Date().toISOString(), stats: this.stats, logs: this.logs };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `source-log-${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        };
+
+        // ==================== 登录表单处理 ====================
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                showToast('请填写用户名和密码', 'error');
+                return;
+            }
+
+            // 模拟登录请求
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            }).catch(() => {
+                // 演示用，忽略错误
+            });
+
+            showToast('登录请求已发送 (演示)');
+        });
+
+        // 社交登录
+        document.querySelectorAll('.btn-social').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const provider = this.dataset.provider;
+                showToast(`${provider} 登录 (演示)`);
+            });
+        });
+
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast show' + (type === 'error' ? ' error' : '');
+            setTimeout(() => toast.classList.remove('show'), 2500);
         }
-        if (circleRect.top <= box.offsetTop || circleRect.bottom >= box.offsetTop + BOX_HEIGHT) {
-          directionY *= -1;
-        }
 
-        // 移动光球
-        const newX = circle.offsetLeft + directionX * speed;
-        const newY = circle.offsetTop + directionY * speed;
+        // 初始化
+        SourceMonitor.init();
 
-        circle.style.left = newX + 'px';
-        circle.style.top = newY + 'px';
-
-        requestAnimationFrame(moveCircle);
-      }
-
-      circle.addEventListener('click', function () {
-        if (isVerified) return;
-
-        isVerified = true;
-        statusEl.textContent = '验证通过！';
-
-        // 停止移动
-        statusEl.classList.add('ok');
-        cancelAnimationFrame(moveCircle);
-      });
-
-      // 启动光球的移动
-      moveCircle();
-    })();
-  </script>
+        // 暴露全局接口
+        window.__SOURCE_MONITOR__ = {
+            getStats: () => SourceMonitor.stats,
+            getLogs: () => SourceMonitor.logs,
+            export: () => SourceMonitor.exportLogs()
+        };
+    </script>
 </body>
 </html>
